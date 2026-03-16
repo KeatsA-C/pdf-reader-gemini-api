@@ -1,6 +1,6 @@
 # PDF Reader with Gemini AI
 
-A powerful and simple web application that leverages Google's Gemini AI to analyze, summarize, and answer questions about PDF documents.
+A simple web application that leverages Google's Gemini AI to analyze, and summarize PDF documents.
 
 ## 🚀 Features
 
