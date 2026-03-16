@@ -19,17 +19,32 @@
         <main>
             <section class="upload-section">
                 <form id="uploadForm">
-                    <div class="input-group">
+                    <div class="mode-selection">
+                        <label class="mode-option">
+                            <input type="radio" name="mode" value="prompt_only">
+                            <span class="mode-text">Prompt Only</span>
+                        </label>
+                        <label class="mode-option">
+                            <input type="radio" name="mode" value="pdf_prompt" checked>
+                            <span class="mode-text">PDF + Prompt</span>
+                        </label>
+                        <label class="mode-option">
+                            <input type="radio" name="mode" value="pdf_only">
+                            <span class="mode-text">PDF Only</span>
+                        </label>
+                    </div>
+
+                    <div class="input-group" id="fileGroup">
                         <label for="pdfFile" class="file-label">
                             <span class="icon">📄</span>
                             <span class="text">Choose PDF File</span>
-                            <input type="file" id="pdfFile" name="pdf" accept="application/pdf" required>
+                            <input type="file" id="pdfFile" name="pdf" accept="application/pdf">
                         </label>
                         <div id="fileName" class="file-name">No file chosen</div>
                     </div>
 
-                    <div class="input-group">
-                        <label for="prompt">Prompt (optional)</label>
+                    <div class="input-group" id="promptGroup">
+                        <label for="prompt">Prompt</label>
                         <textarea id="prompt" name="prompt" placeholder="e.g. Please summarize this PDF in 3 bullet points..."></textarea>
                     </div>
 
