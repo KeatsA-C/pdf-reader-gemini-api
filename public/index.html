@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini PDF Reader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gemini PDF Reader</h1>
+            <p>Upload a PDF and let Gemini analyze it for you.</p>
+        </header>
+
+        <main>
+            <section class="upload-section">
+                <form id="uploadForm">
+                    <div class="input-group">
+                        <label for="pdfFile" class="file-label">
+                            <span class="icon">📄</span>
+                            <span class="text">Choose PDF File</span>
+                            <input type="file" id="pdfFile" name="pdf" accept="application/pdf" required>
+                        </label>
+                        <div id="fileName" class="file-name">No file chosen</div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="prompt">Prompt (optional)</label>
+                        <textarea id="prompt" name="prompt" placeholder="e.g. Please summarize this PDF in 3 bullet points..."></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn">
+                        <span class="btn-text">Analyze PDF</span>
+                        <div class="loader" id="loader"></div>
+                    </button>
+                </form>
+            </section>
+
+            <section id="resultSection" class="result-section hidden">
+                <div class="card">
+                    <h2>Analysis Result</h2>
+                    <div id="resultContent" class="result-content"></div>
+                </div>
+
+                <div class="card usage-card">
+                    <h2>Token Usage Info</h2>
+                    <div id="usageContent" class="usage-content"></div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
