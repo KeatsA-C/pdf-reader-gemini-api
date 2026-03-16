@@ -90,7 +90,18 @@ uploadForm.addEventListener('submit', async (e) => {
             body: formData
         });
 
-        const data = await response.json();
+        // Get the response text first
+        const responseText = await response.text();
+        
+        // Try to parse it as JSON
+        let data;
+        try {
+            data = JSON.parse(responseText);
+        } catch (e) {
+            // If it's not JSON, it might be an HTML error from the server
+            console.error('Server returned non-JSON response:', responseText);
+            throw new Error(`Server Error: Received invalid response format. Status: ${response.status}`);
+        }
 
         if (!response.ok) {
             throw new Error(data.error || 'Failed to process request');

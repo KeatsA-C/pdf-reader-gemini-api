@@ -20,7 +20,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(express.static("public"));
 
 // Configure Multer for PDF uploads
@@ -46,7 +47,7 @@ const upload = multer({
       cb(new Error("Only PDF files are allowed!"), false);
     }
   },
-  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+  limits: { fileSize: 20 * 1024 * 1024 }, // 20MB limit
 });
 
 // Helper function to convert file to GoogleGenerativeAI.Part
@@ -59,7 +60,22 @@ function fileToGenerativePart(path, mimeType) {
   };
 }
 
-app.post("/upload", upload.single("pdf"), async (req, res) => {
+// Custom upload handler to catch Multer errors (like file size limits)
+const uploadMiddleware = upload.single("pdf");
+
+app.post("/upload", (req, res, next) => {
+  uploadMiddleware(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading (e.g., file too large)
+      return res.status(400).json({ error: `Upload error: ${err.message}` });
+    } else if (err) {
+      // An unknown error occurred when uploading
+      return res.status(400).json({ error: err.message });
+    }
+    // Everything went fine, proceed to the next handler
+    next();
+  });
+}, async (req, res) => {
   try {
     const mode = req.body.mode || "pdf_prompt"; // default mode
     let prompt = "";
@@ -119,8 +135,16 @@ app.post("/upload", upload.single("pdf"), async (req, res) => {
     if (req.file && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: `AI Processing Error: ${error.message}` });
   }
+});
+
+// Global error handler to catch any other unhandled errors and return JSON
+app.use((err, req, res, next) => {
+  console.error("Global error handler:", err);
+  res.status(err.status || 500).json({
+    error: err.message || "An unexpected server error occurred"
+  });
 });
 
 app.listen(port, () => {
